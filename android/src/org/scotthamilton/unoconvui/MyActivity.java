@@ -3,8 +3,8 @@ package org.scotthamilton.unoconvui;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.webkit.MimeTypeMap;
 import android.net.Uri;
+import android.webkit.MimeTypeMap;
 import java.util.List;
 import java.util.logging.Logger;
 import org.qtproject.qt5.android.bindings.QtActivity;
@@ -65,7 +65,7 @@ public class MyActivity extends QtActivity implements EasyPermissions.Permission
                 } else {
                         logger.severe("Asking for Permissions");
                         NativeFunctions.debugChangeErrorArea("Asking For Permissions");
-                        EasyPermissions.requestPermissions(this, "We need to access your download folder and internet",
+                        EasyPermissions.requestPermissions(this, "We need to access internet and your download folder",
                         RC_PERM, perms);
                 }
         }
@@ -81,12 +81,14 @@ public class MyActivity extends QtActivity implements EasyPermissions.Permission
         public void onPermissionsGranted(int requestCode, List<String> list) {
                 logger.severe("RC CODE : " + String.valueOf(requestCode) + " : granted " + list.toString());
                 NativeFunctions.debugChangeErrorArea(("RC CODE : " + String.valueOf(requestCode) + " : granted " + list.toString()));
+                NativeFunctions.onPermissionsGranted(list);
         }
 
         @Override
         public void onPermissionsDenied(int requestCode, List<String> list) {
                 logger.severe("RC CODE : " + String.valueOf(requestCode) + " : denied " + list.toString());
                 NativeFunctions.debugChangeErrorArea(("RC CODE : " + String.valueOf(requestCode) + " : denied " + list.toString()));
+                NativeFunctions.onPermissionsDenied(list);
         }
 
         public void openFileDialog() {

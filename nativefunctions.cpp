@@ -47,6 +47,22 @@ static void onFileConverted(JNIEnv * env, jobject, jstring file) {
         AndroidBackend::instance()->gotFileConverted(str);
     }
 }
+static void onPermissionsGranted(JNIEnv * env, jobject, jobject list) {
+    if (AndroidBackend::instance() == nullptr) {
+        qDebug() << "Instance Is nullptr";
+    }
+    else {
+        AndroidBackend::instance()->gotPermissionsGranted();
+    }
+}
+static void onPermissionsDenied(JNIEnv * env, jobject, jobject list) {
+    if (AndroidBackend::instance() == nullptr) {
+        qDebug() << "Instance Is nullptr";
+    }
+    else {
+        AndroidBackend::instance()->gotPermissionsDenied();
+    }
+}
 static void debugChangeErrorArea(JNIEnv * env, jobject, jstring debug_message) {
     QString str = QString::fromUtf8(env->GetStringUTFChars(debug_message, nullptr));
     if (AndroidBackend::instance() == nullptr) {
@@ -63,6 +79,8 @@ static JNINativeMethod methods[] = {
     {"onNoStartupIntent", "()V", (void*)onNoStartupIntent},
     {"onFileSelected", "(Landroid/net/Uri;)V", (void*)onFileSelected},
     {"onFileConverted", "(Ljava/lang/String;)V", (void*)onFileConverted},
+    {"onPermissionsGranted", "(Ljava/util/List;)V", (void*)onPermissionsGranted},
+    {"onPermissionsDenied", "(Ljava/util/List;)V", (void*)onPermissionsDenied},
     {"debugChangeErrorArea", "(Ljava/lang/String;)V", (void*)debugChangeErrorArea}
 };
 // define our native static functions

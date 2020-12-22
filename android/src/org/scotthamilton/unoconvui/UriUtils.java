@@ -9,10 +9,10 @@
 
 package org.scotthamilton.unoconvui;
 
-import android.content.Context;
 import android.content.ContentResolver;
-import android.net.Uri;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 

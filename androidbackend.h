@@ -21,17 +21,22 @@ signals:
     void noStartupIntent();
     void fileSelected();
     void fileConverted(QString);
+    void permissionsGranted();
+    void permissionsDenied();
     void debugChangeErrorArea(QString);
 
 public slots:
     Q_INVOKABLE void openFileDialog();
     Q_INVOKABLE void openPdf(const QString& pdf_file);
     Q_INVOKABLE void convertIntent();
+    Q_INVOKABLE void grantPermissions();
     void convertFile(const QAndroidJniObject& uri);
     void gotOpenDocumentIntent(const QAndroidJniObject& uri);
     void gotNoStartupIntent();
     void gotFileSelected(const QAndroidJniObject& uri);
     void gotFileConverted(const QString& pdf_file);
+    void gotPermissionsGranted();
+    void gotPermissionsDenied();
     void gotDebugChangeErrorArea(const QString& debug_message);
 
 private:

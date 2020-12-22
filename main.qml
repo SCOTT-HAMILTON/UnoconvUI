@@ -9,12 +9,16 @@ ApplicationWindow {
     visible: true
     title: qsTr("Unoconv")
 
+    property bool got_startup_intent: false
+
     Button {
         id: button
         highlighted: true
         x: root.width/2-width/2
         y: root.height/2-height/2
         state: ""
+        width: root.width*0.5
+        height: width*0.3
 
         states: [
             State {
@@ -32,6 +36,10 @@ ApplicationWindow {
             State {
                 name: "open"
                 PropertyChanges { target: button; text: qsTr("Open"); enabled: true }
+            },
+            State {
+                name: "grant-permissions"
+                PropertyChanges { target: button; text: qsTr("Grant Permissions"); enabled: true }
             }
         ]
 
@@ -39,9 +47,11 @@ ApplicationWindow {
             target: androidBackend
 
             function onIntentOpenDocument() {
+                root.got_startup_intent = true
                 button.state = "convert";
             }
             function onNoStartupIntent() {
+                root.got_startup_intent = false
                 button.state = "select-file";
             }
             function onFileSelected() {
@@ -50,7 +60,16 @@ ApplicationWindow {
             function onFileConverted(pdf_file) {
                 button.state = "open";
             }
-
+            function onPermissionsGranted() {
+                if (root.got_startup_intent) {
+                    button.state = "convert";
+                } else {
+                    button.state = "select-file";
+                }
+            }
+            function onPermissionsDenied() {
+                button.state = "grant-permissions";
+            }
         }
 
         onClicked: {
@@ -64,6 +83,9 @@ ApplicationWindow {
                 break
             case "open":
                 androidBackend.openPdf(androidBackend.pdf_file)
+                break
+            case "grant-permissions":
+                androidBackend.grantPermissions()
                 break
             }
         }

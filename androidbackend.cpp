@@ -19,7 +19,7 @@ AndroidBackend *AndroidBackend::instance()
 void AndroidBackend::init()
 {
     auto activity = QtAndroid::androidActivity();
-    activity.callMethod<void>("grantPermissions");
+    grantPermissions();
     activity.callMethod<void>("getIntents");
 }
 
@@ -44,6 +44,12 @@ void AndroidBackend::openPdf(const QString& pdf_file)
 void AndroidBackend::convertIntent()
 {
     convertFile(m_intent_open_object_uri);
+}
+
+void AndroidBackend::grantPermissions()
+{
+    auto activity = QtAndroid::androidActivity();
+    activity.callMethod<void>("grantPermissions");
 }
 
 void AndroidBackend::convertFile(const QAndroidJniObject &uri)
@@ -75,6 +81,16 @@ void AndroidBackend::gotFileConverted(const QString &pdf_file)
     m_pdf_file = pdf_file;
     openPdf(pdf_file);
     emit fileConverted(pdf_file);
+}
+
+void AndroidBackend::gotPermissionsGranted()
+{
+    emit permissionsGranted();
+}
+
+void AndroidBackend::gotPermissionsDenied()
+{
+    emit permissionsDenied();
 }
 
 void AndroidBackend::gotDebugChangeErrorArea(const QString &debug_message)
