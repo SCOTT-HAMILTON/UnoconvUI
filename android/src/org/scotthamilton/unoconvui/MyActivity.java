@@ -25,27 +25,29 @@ public class MyActivity extends QtActivity implements EasyPermissions.Permission
                 String type = intent.getType();
 
                 if (Intent.ACTION_VIEW.equals(action) && type != null) {
-                        logger.severe("Got ViewIntent");
+                        logger.severe("Got View Intent");
                         NativeFunctions.debugChangeErrorArea("Got View Intent");
+                        NativeFunctions.debugChangeErrorArea("Type is : "+type);
                         NativeFunctions.onIntentOpenDocument(intent.getData());
                 } else if (Intent.ACTION_SEND.equals(action) && type != null) {
                         logger.severe("Got Send Intent");
                         NativeFunctions.debugChangeErrorArea("Got Send Intent");
                         NativeFunctions.debugChangeErrorArea("Type is : "+type);
-
-//                        NativeFunctions.debugChangeErrorArea("Send Intent Data : "+intent.getData());
-
-                        NativeFunctions.debugChangeErrorArea("MimeType : "+MimeTypeMap.getSingleton().getMimeTypeFromExtension("docx").toString());
-//                        NativeFunctions.onIntentOpenDocument(intent.getData());
+                        Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                        NativeFunctions.onIntentOpenDocument(uri);
                 } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                         logger.severe("Got Send Multiple Intent");
                         NativeFunctions.debugChangeErrorArea("Got Send Multiple Intent");
                         NativeFunctions.debugChangeErrorArea("Type is : "+type);
-
-//                        NativeFunctions.debugChangeErrorArea("Send Intent Data : "+intent.getData());
-
-                        NativeFunctions.debugChangeErrorArea("MimeType : "+MimeTypeMap.getSingleton().getMimeTypeFromExtension("docx").toString());
-//                        NativeFunctions.onIntentOpenDocument(intent.getData());
+                        Uri uri = null;
+                        try {
+                                uri = (Uri) intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM).get(0);
+                        } catch (IndexOutOfBoundsException e) {
+                                logger.severe("Can't extract Uris from Intent, EXTRA_STREAM is empty");
+                                NativeFunctions.debugChangeErrorArea("Can't extract Uris from Intent, EXTRA_STREAM is empty");
+                                return;
+                        }
+                        NativeFunctions.onIntentOpenDocument(uri);
                 } else {
                         NativeFunctions.onNoStartupIntent();
                 }
