@@ -20,6 +20,8 @@ else: HEADERS += desktopbackend.h
 
 RESOURCES += qml.qrc
 
+RC_ICONS = icon.ico
+
 TRANSLATIONS += \
         translations/UnoconvUI_fr_FR.ts
 

@@ -25,6 +25,9 @@ signals:
     void permissionsDenied();
     void debugChangeErrorArea(QString);
 
+    // Not to be used, just for letting QML be happy
+    void readyForFileSelection();
+
 public slots:
     Q_INVOKABLE void openFileDialog();
     Q_INVOKABLE void openPdf(const QString& pdf_file);

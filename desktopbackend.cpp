@@ -58,6 +58,7 @@ void DesktopBackend::onRequestReplyFinished()
         // Write to Pdf file
         QString download_folder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
         QString pdf_file_path = download_folder+"/"+m_file_to_convert_basename+".pdf";
+        m_pdf_file = pdf_file_path;
         qDebug() << "[log] writing to pdf file `" << pdf_file_path << "`";
         emit debugChangeErrorArea("writing to pdf file `"+pdf_file_path+"`");
         QFile pdf(pdf_file_path);
