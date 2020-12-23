@@ -2,19 +2,17 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include <QUrl>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-
+#ifdef Q_OS_ANDROID
 #include "androidbackend.h"
+#else
+#include "desktopbackend.h"
+#endif
 
 int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
-    AndroidBackend androidBackend;
-    AndroidBackend::setInstance(&androidBackend);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -24,11 +22,23 @@ int main(int argc, char *argv[])
             QApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    engine.rootContext()->setContextProperty("androidBackend", &androidBackend);
+#ifdef Q_OS_ANDROID
+    AndroidBackend androidBackend;
+    AndroidBackend::setInstance(&androidBackend);
+    engine.rootContext()->setContextProperty("backend", &androidBackend);
+#else
+    DesktopBackend desktopBackend;
+    engine.rootContext()->setContextProperty("backend", &desktopBackend);
+#endif
+
 
     engine.load(url);
 
+#ifdef Q_OS_ANDROID
     androidBackend.init();
+#else
+    desktopBackend.init();
+#endif
 
     return app.exec();
 }

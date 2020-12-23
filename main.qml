@@ -44,11 +44,15 @@ ApplicationWindow {
         ]
 
         Connections {
-            target: androidBackend
+            target: backend
 
             function onIntentOpenDocument() {
                 root.got_startup_intent = true
                 button.state = "convert";
+            }
+            function onReadyForFileSelection() {
+                root.got_startup_intent = false
+                button.state = "select-file";
             }
             function onNoStartupIntent() {
                 root.got_startup_intent = false
@@ -75,17 +79,17 @@ ApplicationWindow {
         onClicked: {
             switch (state) {
             case "select-file":
-                androidBackend.openFileDialog()
+                backend.openFileDialog()
                 break
             case "convert":
-                androidBackend.convertIntent()
+                backend.convertIntent()
                 button.state = "converting"
                 break
             case "open":
-                androidBackend.openPdf(androidBackend.pdf_file)
+                backend.openPdf(backend.pdf_file)
                 break
             case "grant-permissions":
-                androidBackend.grantPermissions()
+                backend.grantPermissions()
                 break
             }
         }
@@ -111,7 +115,7 @@ ApplicationWindow {
             readOnly: true
             text: "Debug Area : \n"
             Connections {
-                target: androidBackend
+                target: backend
                 function onDebugChangeErrorArea(text) {
                     debugErrorArea.text += "\n - "+text
                 }

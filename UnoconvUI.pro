@@ -1,5 +1,6 @@
 QT += quick widgets
 unix:android: QT += androidextras
+else: QT += network gui
 
 CONFIG += c++11
 
@@ -8,14 +9,19 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        androidbackend.cpp \
-        main.cpp \
-        nativefunctions.cpp
+        main.cpp
+unix:android: SOURCES += nativefunctions.cpp \
+                         androidbackend.cpp
+else: SOURCES += desktopbackend.cpp
 
-HEADERS += \
-    androidbackend.h
+
+unix:android: HEADERS += androidbackend.h
+else: HEADERS += desktopbackend.h
 
 RESOURCES += qml.qrc
+
+TRANSLATIONS += \
+        translations/UnoconvUI_fr_FR.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -28,6 +34,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+unix:android: \
 DISTFILES += \
     android/AndroidManifest.xml \
     android/build.gradle \
@@ -45,5 +52,6 @@ DISTFILES += \
     android/src/org/scotthamilton/unoconvui/UriUtils.java \
     android/src/org/scotthamilton/unoconvui/WebServiceFileConvertRunnable.java
 
+unix:android: \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

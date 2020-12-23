@@ -30,7 +30,6 @@ public slots:
     Q_INVOKABLE void openPdf(const QString& pdf_file);
     Q_INVOKABLE void convertIntent();
     Q_INVOKABLE void grantPermissions();
-    void convertFile(const QAndroidJniObject& uri);
     void gotOpenDocumentIntent(const QAndroidJniObject& uri);
     void gotNoStartupIntent();
     void gotFileSelected(const QAndroidJniObject& uri);
@@ -43,6 +42,8 @@ private:
     static AndroidBackend* m_instance;
     QString m_pdf_file;
     QAndroidJniObject m_intent_open_object_uri;
+
+    void convertFile(const QAndroidJniObject& uri);
 };
 
 #endif // ANDROIDBACKEND_H
