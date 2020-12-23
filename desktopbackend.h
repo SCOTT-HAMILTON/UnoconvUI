@@ -18,6 +18,7 @@ signals:
     void fileSelected();
     void fileConverted(QString);
     void debugChangeErrorArea(QString);
+    void conversionFailure(QString);
 
     // Not to be used, just for letting QML be happy
     void intentOpenDocument();
@@ -28,6 +29,7 @@ signals:
 public slots:
     Q_INVOKABLE void openFileDialog();
     Q_INVOKABLE void openPdf(const QString& pdf_file);
+    Q_INVOKABLE void convertSelectedFile();
     void onRequestReplyFinished();
     void onRequestReplyUploadProgress(qint64 bytesSent, qint64 bytesTotal);
     void onRequestReplyDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
@@ -35,6 +37,7 @@ public slots:
 
 private:
     QString m_pdf_file;
+    QString m_selected_file;
     QString m_file_to_convert_basename;
     QString m_host;
     QNetworkReply* m_reply;

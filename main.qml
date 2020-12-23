@@ -15,9 +15,9 @@ ApplicationWindow {
     Rectangle {
         id: errorBox
         width: errorLabel.width*1.07
-        height: errorLabel.height*4
+        height: errorLabel.height*2
         x: -2*width
-        y: button.y-height*2
+        y: root.height*0.1
         color: "#FF0000"
         property var clean_anim: function() {
                 errorBox.visible = false
@@ -81,11 +81,10 @@ ApplicationWindow {
         id: button
         highlighted: true
         x: root.width/2-width/2
-        y: root.height/2-height/2
+        y: root.height*0.4-height/2
         state: ""
         width: root.width*0.5
-        height: width*0.3
-
+        padding: root.width*0.04
         states: [
             State {
                 name: "select-file"
@@ -181,8 +180,7 @@ ApplicationWindow {
         width: root.width*0.8
         height: root.height*0.3
         anchors.horizontalCenter: button.horizontalCenter
-        anchors.top: convertingIndicator.bottom
-        anchors.topMargin: root.height*0.01
+        y: root.height*0.99-height
         TextArea {
             id: debugErrorArea
             readOnly: true

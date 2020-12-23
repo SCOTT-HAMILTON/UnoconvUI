@@ -34,6 +34,7 @@ void DesktopBackend::openFileDialog()
         tr("Open File to Convert"),
         QStandardPaths::writableLocation(QStandardPaths::DownloadLocation),
         tr("Any File Supported by Unoconv (*.*)"));
+    m_selected_file = filename;
     emit fileSelected();
     convertFile(filename);
 }
@@ -46,6 +47,11 @@ void DesktopBackend::openPdf(const QString &pdf_file)
     QDesktopServices::openUrl(url);
 }
 
+void DesktopBackend::convertSelectedFile()
+{
+    convertFile(m_selected_file);
+}
+
 void DesktopBackend::onRequestReplyFinished()
 {
     if (!m_reply) {
@@ -54,6 +60,7 @@ void DesktopBackend::onRequestReplyFinished()
     } else if (m_reply->error() != QNetworkReply::NoError) {
         qDebug() << "[error] request failed : " << m_reply->errorString();
         emit debugChangeErrorArea("request failed : "+m_reply->errorString());
+        emit conversionFailure(m_reply->errorString());
     } else {
         // Write to Pdf file
         QString download_folder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
