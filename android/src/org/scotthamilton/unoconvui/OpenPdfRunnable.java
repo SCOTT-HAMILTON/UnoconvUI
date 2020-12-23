@@ -38,6 +38,7 @@ public class OpenPdfRunnable implements Runnable
                 } catch (ActivityNotFoundException e) {
                         logger.severe("No Pdf reader available, please install one");
                         NativeFunctions.debugChangeErrorArea("No Pdf reader available, please install one");
+                        NativeFunctions.conversionFailure("No pdf reader available");
                 }
         }
 }

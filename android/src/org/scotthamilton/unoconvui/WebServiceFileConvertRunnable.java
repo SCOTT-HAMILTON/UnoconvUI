@@ -110,6 +110,7 @@ public class WebServiceFileConvertRunnable implements Runnable
                                         } catch (RuntimeException e) {
                                                 // Couldn't extract
                                                 NativeFunctions.debugChangeErrorArea("Error: couldn't extract basename from Uri : "+m_input_file_uri.toString());
+                                                NativeFunctions.conversionFailure("Filename to convert is invalid");
                                                 return;
                                         }
                                         String str_boundary = UUID.randomUUID().toString();
@@ -136,9 +137,9 @@ public class WebServiceFileConvertRunnable implements Runnable
                                                 } catch (MalformedURLException e){
                                                         logger.severe("MalformedURLException when connecting to web service : "+e.toString());
                                                         NativeFunctions.debugChangeErrorArea("MalformedURLException when connecting to web service : "+e.toString());
+                                                        NativeFunctions.conversionFailure("Bad server Url");
                                                 }
                                         HttpURLConnection client = null;
-                                        BufferedReader reader = null;
                                         try {
                                                 logger.severe("Openning Connection...");
                                                 NativeFunctions.debugChangeErrorArea("Openning Connection...");
@@ -198,28 +199,26 @@ public class WebServiceFileConvertRunnable implements Runnable
                                         } catch ( IOException e ){
                                                 logger.severe("IOException when connecting to web service : "+e.toString());
                                                 NativeFunctions.debugChangeErrorArea("IOException when connecting to web service : "+e.toString());
+                                                NativeFunctions.conversionFailure("Can't connect to webservice, verify your internet ?");
                                         } catch ( SecurityException e){
                                                 logger.severe("SecurityException when connecting to web service : "+e.toString());
                                                 NativeFunctions.debugChangeErrorArea("SecurityException when connecting to web service : "+e.toString());
+                                                NativeFunctions.conversionFailure("Security error when connecting to web service");
                                         } catch ( IllegalArgumentException e){
                                                 logger.severe("IllegalArgumentException when connecting to web service : "+e.toString());
                                                 NativeFunctions.debugChangeErrorArea("IllegalArgumentException when connecting to web service : "+e.toString());
+                                                NativeFunctions.conversionFailure("Failed to connect to web service");
                                         } catch ( UnsupportedOperationException e){
                                                 logger.severe("UnsupportedOperationException when connecting to web service : "+e.toString());
                                                 NativeFunctions.debugChangeErrorArea("UnsupportedOperationException when connecting to web service : "+e.toString());
+                                                NativeFunctions.conversionFailure("Failed to request web service");
                                         } finally {
-                                                try {
-                                                        if (reader != null)
-                                                                reader.close();
-                                                        } catch (IOException e) {
-                                                                logger.severe("IOException when closing reader : "+e.toString());
-                                                                NativeFunctions.debugChangeErrorArea("IOException when closing reader : "+e.toString());
-                                                        }
                                                 if(client != null) // Make sure the connection is not null.
-                                                client.disconnect();
+                                                        client.disconnect();
                                                 }
                                         } catch (Exception e) {
-                                        e.printStackTrace();
+                                                e.printStackTrace();
+                                                NativeFunctions.conversionFailure("Failed to convert");
                                         }
                                 }
                         });

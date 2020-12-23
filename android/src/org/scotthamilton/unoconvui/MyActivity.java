@@ -45,6 +45,7 @@ public class MyActivity extends QtActivity implements EasyPermissions.Permission
                         } catch (IndexOutOfBoundsException e) {
                                 logger.severe("Can't extract Uris from Intent, EXTRA_STREAM is empty");
                                 NativeFunctions.debugChangeErrorArea("Can't extract Uris from Intent, EXTRA_STREAM is empty");
+                                NativeFunctions.conversionFailure("Given file is invalid");
                                 return;
                         }
                         NativeFunctions.onIntentOpenDocument(uri);

@@ -72,6 +72,16 @@ static void debugChangeErrorArea(JNIEnv * env, jobject, jstring debug_message) {
         AndroidBackend::instance()->gotDebugChangeErrorArea(str);
     }
 }
+static void conversionFailure(JNIEnv * env, jobject, jstring error_message) {
+    QString str = QString::fromUtf8(env->GetStringUTFChars(error_message, nullptr));
+    if (AndroidBackend::instance() == nullptr) {
+        qDebug() << "Instance Is nullptr";
+    }
+    else {
+        qDebug() << "Got Conversion Failure : " << str;
+        AndroidBackend::instance()->gotConversionFailure(str);
+    }
+}
 
 
 static JNINativeMethod methods[] = {
@@ -81,7 +91,8 @@ static JNINativeMethod methods[] = {
     {"onFileConverted", "(Ljava/lang/String;)V", (void*)onFileConverted},
     {"onPermissionsGranted", "(Ljava/util/List;)V", (void*)onPermissionsGranted},
     {"onPermissionsDenied", "(Ljava/util/List;)V", (void*)onPermissionsDenied},
-    {"debugChangeErrorArea", "(Ljava/lang/String;)V", (void*)debugChangeErrorArea}
+    {"debugChangeErrorArea", "(Ljava/lang/String;)V", (void*)debugChangeErrorArea},
+    {"conversionFailure", "(Ljava/lang/String;)V", (void*)conversionFailure}
 };
 // define our native static functions
 // these are the functions that Java part will call directly from Android UI thread

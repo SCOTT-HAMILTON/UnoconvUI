@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.0
+import QtGraphicalEffects 1.0
 
 ApplicationWindow {
     id: root
@@ -10,6 +11,71 @@ ApplicationWindow {
     title: qsTr("Unoconv")
 
     property bool got_startup_intent: false
+
+    Rectangle {
+        id: errorBox
+        width: errorLabel.width*1.07
+        height: errorLabel.height*4
+        x: -2*width
+        y: button.y-height*2
+        color: "#FF0000"
+        property var clean_anim: function() {
+                errorBox.visible = false
+                errorBox.x = -2*errorBox.width
+                errorBox.opacity = 1.0
+        }
+
+        property var show_error: function (error_message) {
+            if (errorBoxLifecycleAnimation.running) {
+                errorBoxLifecycleAnimation.stop()
+                clean_anim()
+            }
+            errorLabel.text = error_message
+            errorBox.visible = true
+            errorBoxLifecycleAnimation.start()
+        }
+        ScrollView {
+            width: errorLabel.width>=root.width*0.7?root.width*0.7:errorLabel.width
+            anchors.centerIn: parent
+            Text {
+                id: errorLabel
+                anchors.fill: parent
+                text: ""
+                font.pointSize: 12
+            }
+        }
+        SequentialAnimation {
+            id: errorBoxLifecycleAnimation
+            PropertyAnimation {
+                target: errorBox
+                property: "x"
+                from: errorBox.x
+                to: 0
+                duration: 1000
+                easing.type: Easing.OutQuint
+            }
+            PauseAnimation {
+                duration: 3000
+            }
+            PropertyAnimation {
+                target: errorBox
+                property: "opacity"
+                from: 1.0
+                to: 0
+                duration: 1000
+            }
+            onFinished: {
+                errorBox.clean_anim()
+            }
+        }
+        Connections {
+            target: backend
+            function onConversionFailure (error_message) {
+                errorBox.visible = true
+                errorBox.show_error(error_message)
+            }
+        }
+    }
 
     Button {
         id: button
@@ -74,6 +140,9 @@ ApplicationWindow {
             function onPermissionsDenied() {
                 button.state = "grant-permissions";
             }
+            function onConversionFailure(error_message) {
+                button.state = "convert";
+            }
         }
 
         onClicked: {
@@ -82,7 +151,11 @@ ApplicationWindow {
                 backend.openFileDialog()
                 break
             case "convert":
-                backend.convertIntent()
+                if (root.got_startup_intent) {
+                    backend.convertIntent()
+                } else {
+                    backend.convertSelectedFile()
+                }
                 button.state = "converting"
                 break
             case "open":

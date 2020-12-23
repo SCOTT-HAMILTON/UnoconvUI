@@ -14,5 +14,6 @@ public class NativeFunctions {
         public static native void onPermissionsGranted(List<String> permissions);
         public static native void onPermissionsDenied(List<String> permissions);
 
-        public static native void debugChangeErrorArea(String pdf_file);
+        public static native void debugChangeErrorArea(String error_message);
+        public static native void conversionFailure(String error_message);
 }

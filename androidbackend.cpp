@@ -46,6 +46,11 @@ void AndroidBackend::convertIntent()
     convertFile(m_intent_open_object_uri);
 }
 
+void AndroidBackend::convertSelectedFile()
+{
+    convertFile(m_file_selected_uri);
+}
+
 void AndroidBackend::grantPermissions()
 {
     auto activity = QtAndroid::androidActivity();
@@ -72,6 +77,7 @@ void AndroidBackend::gotNoStartupIntent()
 
 void AndroidBackend::gotFileSelected(const QAndroidJniObject &uri)
 {
+    m_file_selected_uri = uri;
     emit fileSelected();
     convertFile(uri);
 }
@@ -96,4 +102,9 @@ void AndroidBackend::gotPermissionsDenied()
 void AndroidBackend::gotDebugChangeErrorArea(const QString &debug_message)
 {
     emit debugChangeErrorArea(debug_message);
+}
+
+void AndroidBackend::gotConversionFailure(const QString &error_message)
+{
+   emit conversionFailure(error_message);
 }
