@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>translations/UnoconvUI_fr_FR.qm</file>
+    </qresource>
+</RCC>

@@ -1,37 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_FR">
 <context>
+    <name>DesktopBackend</name>
+    <message>
+        <location line="34" filename="../desktopbackend.cpp"/>
+        <source>Open File to Convert</source>
+        <translation>Ouvrir un Fichier à Convertir</translation>
+    </message>
+    <message>
+        <location line="36" filename="../desktopbackend.cpp"/>
+        <source>Any File Supported by Unoconv (*.*)</source>
+        <translation>Tous Fichiers Supportés par Unoconv (*.*)</translation>
+    </message>
+</context>
+<context>
     <name>main</name>
     <message>
-        <location filename="../main.qml" line="10"/>
+        <location line="10" filename="../main.qml"/>
         <source>Unoconv</source>
-        <translation type="unfinished"></translation>
+        <translation>Unocon</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="26"/>
+        <location line="26" filename="../main.qml"/>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner un fichier</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="30"/>
+        <location line="30" filename="../main.qml"/>
         <source>Converting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertion...</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="34"/>
+        <location line="34" filename="../main.qml"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="38"/>
+        <location line="38" filename="../main.qml"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="42"/>
+        <location line="42" filename="../main.qml"/>
         <source>Grant Permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoriser</translation>
     </message>
 </context>
 </TS>

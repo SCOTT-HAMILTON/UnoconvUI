@@ -31,9 +31,9 @@ QString DesktopBackend::getPdfFile() const
 void DesktopBackend::openFileDialog()
 {
     QString filename = QFileDialog::getOpenFileName(nullptr,
-        tr("Open File to convert"),
+        tr("Open File to Convert"),
         QStandardPaths::writableLocation(QStandardPaths::DownloadLocation),
-        tr("Any file supported by unoconv (*.*)"));
+        tr("Any File Supported by Unoconv (*.*)"));
     emit fileSelected();
     convertFile(filename);
 }

@@ -18,7 +18,8 @@ else: SOURCES += desktopbackend.cpp
 unix:android: HEADERS += androidbackend.h
 else: HEADERS += desktopbackend.h
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    translations.qrc
 
 RC_ICONS = icon.ico
 

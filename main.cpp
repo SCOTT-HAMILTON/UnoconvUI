@@ -2,6 +2,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+#include <QLocale>
+#include <QTranslator>
+
 #ifdef Q_OS_ANDROID
 #include "androidbackend.h"
 #else
@@ -13,6 +16,12 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
+
+    QTranslator translator;
+    QLocale locale;//(QLocale::English, QLocale::UnitedStates);
+
+    if (translator.load(":/translations/UnoconvUI_"+locale.name()+".qm"))
+        app.installTranslator(&translator);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
