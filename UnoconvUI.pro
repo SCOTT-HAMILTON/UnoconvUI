@@ -2,7 +2,7 @@ QT += quick widgets
 unix:android: QT += androidextras
 else: QT += network gui
 
-CONFIG += c++11
+CONFIG += c++11 lrelease embed_translations
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -18,13 +18,13 @@ else: SOURCES += desktopbackend.cpp
 unix:android: HEADERS += androidbackend.h
 else: HEADERS += desktopbackend.h
 
-RESOURCES += qml.qrc \
-    translations.qrc
+RESOURCES += qml.qrc
 
 RC_ICONS = icon.ico
 
 TRANSLATIONS += \
         translations/UnoconvUI_fr_FR.ts
+QM_FILES_RESOURCE_PREFIX = :/translations
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -33,8 +33,31 @@ QML_IMPORT_PATH =
 QML_DESIGNER_IMPORT_PATH =
 
 # Default rules for deployment.
+target = UnoconvUI
 qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+else: unix:!android: {
+	target.path = $${QT_INSTALL_PREFIX}/bin
+
+	icon16.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/16x16/apps
+	icon16.files = icons/16/UnoconvUI.png
+	icon16.extra = rsvg-convert -w 16 -h 16 -f png icon.svg > icons/16/UnoconvUI.png
+	icon32.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/32x32/apps
+	icon32.files = icons/32/UnoconvUI.png
+	icon32.extra = rsvg-convert -w 32 -h 32 -f png icon.svg > icons/32/UnoconvUI.png
+	icon48.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps
+	icon48.files = icons/48/UnoconvUI.png
+	icon48.extra = rsvg-convert -w 48 -h 48 -f png icon.svg > icons/48/UnoconvUI.png
+	icon64.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/64x64/apps
+	icon64.files = icons/64/UnoconvUI.png
+	icon64.extra = rsvg-convert -w 64 -h 64 -f png icon.svg > icons/64/UnoconvUI.png
+	icon128.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps
+	icon128.files = icons/128/UnoconvUI.png
+	icon128.extra = rsvg-convert -w 128 -h 128 -f png icon.svg > icons/128/UnoconvUI.png
+	icon256.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps
+	icon256.files = icons/256/UnoconvUI.png
+	icon256.extra = rsvg-convert -w 256 -h 256 -f png icon.svg > icons/256/UnoconvUI.png
+	INSTALLS += icon16 icon32 icon48 icon64 icon128 icon256
+}
 !isEmpty(target.path): INSTALLS += target
 
 unix:android: \
