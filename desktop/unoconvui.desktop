@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Unoconv UI
+Exec=UnoconvUI %F
+Icon=UnoconvUI
+Type=Application
+Categories=Qt;KDE;Office;Network;Utility;
+MimeType=application/epub+zip; application/msword; application/pdf; application/vnd.ms-excel; application/vnd.ms-powerpoint; application/vnd.oasis.opendocument.graphics; application/vnd.oasis.opendocument.graphics-template; application/vnd.oasis.opendocument.presentation; application/vnd.oasis.opendocument.presentation-template; application/vnd.oasis.opendocument.spreadsheet; application/vnd.oasis.opendocument.spreadsheet-template; application/vnd.oasis.opendocument.text; application/vnd.oasis.opendocument.text-template; application/vnd.openxmlformats-officedocument.presentationml.presentation; application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; application/vnd.openxmlformats-officedocument.wordprocessingml.document; application/vnd.stardivision.calc; application/vnd.stardivision.draw; application/vnd.stardivision.impress; application/vnd.stardivision.writer; application/vnd.sun.xml.calc; application/vnd.sun.xml.calc.template; application/vnd.sun.xml.draw; application/vnd.sun.xml.draw.template; application/vnd.sun.xml.impress; application/vnd.sun.xml.impress.template; application/vnd.sun.xml.writer; application/vnd.sun.xml.writer.template; application/x-latex; application/x-shockwave-flash; application/xhtml+xml; image/gif; image/jpeg; image/png; image/svg+xml; image/tiff; image/x-cmu-raster; image/x-ms-bmp; image/x-portable-bitmap; image/x-portable-graymap; image/x-portable-pixmap; image/x-xpixmap; text/comma-separated-values; text/html; text/plain; text/rtf; text/x-bibtex; video/dv;
+GenericName=MS Office files Conversion Client for the Unoconv Web Service
+GenericName[]=Client de conversion de fichiers MS Office pour le Web Service Unoconv
+Terminal=false
+
