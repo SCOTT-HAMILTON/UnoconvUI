@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Unoconv UI</DisplayName>
+    <Description>MS Office files conversion client for the Unoconv Web Service</Description>
+    <Description xml:lang="fr_fr">Client de conversion de fichiers MS Office pour le Web Service Unoconv</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2020-12-25</ReleaseDate>
+    <Name>org.scotthamilton.root</Name>
+    <Dependencies></Dependencies>
+    <Licenses>
+        <License name="License Agreement" file="license.txt" />
+    </Licenses>
+    <!-- <Script>installscript.qs</Script> -->
+    <!-- <UserInterfaces> -->
+    <!--     <UserInterface>specialpage.ui</UserInterface> -->
+    <!--     <UserInterface>errorpage.ui</UserInterface> -->
+    <!-- </UserInterfaces> -->
+    <Translations>
+	</Translations>
+    <Default>true</Default>
+    <ForcedInstallation>true</ForcedInstallation>
+    <Essential>true</Essential>
+	<Default>true</Default>
+    <SortingPriority>123</SortingPriority>
+</Package>

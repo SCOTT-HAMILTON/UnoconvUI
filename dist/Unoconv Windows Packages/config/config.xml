@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>Unoconv UI</Name>
+    <Version>1.0.0</Version>
+    <Title>Unoconv UI Installer</Title>
+    <Publisher>Scott Hamilton</Publisher>
+	<ProductUrl>http://github.com/SCOTT-HAMILTON/UnoconvUI</ProductUrl>
+    <InstallerWindowIcon>UnoconvUI</InstallerWindowIcon>
+    <InstallerApplicationIcon>UnoconvUI</InstallerApplicationIcon>
+    <Logo>UnoconvUI</Logo>
+    <RunProgram>@TargetDir@/UnoconvUI.exe</RunProgram>
+    <RunProgramDescription>MS Office files conversion client for the Unoconv Web Service</RunProgramDescription>
+    <StartMenuDir>Scott Hamilton Apps</StartMenuDir>
+    <MaintenanceToolName>UnoconvUIMaintenanceTool</MaintenanceToolName>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+	<TargetDir>@ApplicationsDir@/UnoconvUI</TargetDir>
+    <AdminTargetDir>@RootDir@/UnoconvUI</AdminTargetDir>
+</Installer>
