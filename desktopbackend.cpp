@@ -128,7 +128,9 @@ void DesktopBackend::convertFile(const QString &filename)
 
         QUrl url("http://"+m_host+"/unoconv/pdf");
         QNetworkRequest request(url);
+#if QT_VERSION >= 0x051400
         request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
+#endif
         request.setHeader(QNetworkRequest::UserAgentHeader, QString("curl/7.73.0").toUtf8());
         request.setRawHeader(QString("Accept").toUtf8(), QString("*/*").toUtf8());
         request.setRawHeader(QString("Accept-Encoding").toUtf8(), QString("identity").toUtf8());
@@ -140,13 +142,17 @@ void DesktopBackend::convertFile(const QString &filename)
             QObject::disconnect(m_reply, &QNetworkReply::finished, this, &DesktopBackend::onRequestReplyFinished);
             QObject::disconnect(m_reply, &QNetworkReply::uploadProgress, this, &DesktopBackend::onRequestReplyUploadProgress);
             QObject::disconnect(m_reply, &QNetworkReply::downloadProgress, this, &DesktopBackend::onRequestReplyDownloadProgress);
+#if QT_VERSION >= 0x051500
             QObject::disconnect(m_reply, &QNetworkReply::errorOccurred, this, &DesktopBackend::onRequestReplyErrorOccured);
+#endif
         }
         QNetworkAccessManager* accessManager = new QNetworkAccessManager(this);
         m_reply = accessManager->post(request, multiPart);
         QObject::connect(m_reply, &QNetworkReply::finished, this, &DesktopBackend::onRequestReplyFinished);
         QObject::connect(m_reply, &QNetworkReply::uploadProgress, this, &DesktopBackend::onRequestReplyUploadProgress);
         QObject::connect(m_reply, &QNetworkReply::downloadProgress, this, &DesktopBackend::onRequestReplyDownloadProgress);
+#if QT_VERSION >= 0x051500
         QObject::connect(m_reply, &QNetworkReply::errorOccurred, this, &DesktopBackend::onRequestReplyErrorOccured);
+#endif
     }
 }
