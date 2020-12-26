@@ -56,7 +56,7 @@ else: unix:!android: {
 	icon256.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps
 	icon256.files = icons/256/UnoconvUI.png
 	icon256.extra = rsvg-convert -w 256 -h 256 -f png icon.svg > icons/256/UnoconvUI.png
-	iconscalable.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps
+	iconscalable.path = $${QT_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps
 	iconscalable.files = icons/scalable/UnoconvUI.svg
 	iconscalable.extra = cp icon.svg icons/scalable/UnoconvUI.svg
 
