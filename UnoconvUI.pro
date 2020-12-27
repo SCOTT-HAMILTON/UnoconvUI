@@ -24,7 +24,7 @@ RC_ICONS = icon.ico
 
 TRANSLATIONS += \
         translations/UnoconvUI_fr_FR.ts
-QM_FILES_RESOURCE_PREFIX = :/translations
+QM_FILES_RESOURCE_PREFIX = /translations
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

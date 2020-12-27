@@ -19,9 +19,14 @@ int main(int argc, char *argv[])
 
     QTranslator translator;
     QLocale locale;//(QLocale::English, QLocale::UnitedStates);
+    qDebug() << "locale : " << locale.name();
 
-    if (translator.load(":/translations/UnoconvUI_"+locale.name()+".qm"))
+    if (translator.load(":/translations/UnoconvUI_"+locale.name()+".qm")) {
+        qDebug() << "Successfully loaded :/translations/UnoconvUI_"+locale.name()+".qm";
         app.installTranslator(&translator);
+    }
+    else
+        qDebug() << "Couldn't load :/translations/UnoconvUI_" + locale.name() + ".qm";
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
