@@ -1,4 +1,4 @@
-QT += quick widgets quickcontrols2
+QT += quick widgets
 unix:android: QT += androidextras
 else: QT += network gui
 
