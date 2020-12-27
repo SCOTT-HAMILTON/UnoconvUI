@@ -1,19 +1,27 @@
 #include "androidbackend.h"
 
-AndroidBackend* AndroidBackend::AndroidBackend::m_instance = nullptr;
+static AndroidBackend *s_instance = nullptr;
 
 AndroidBackend::AndroidBackend(QObject *parent) : QObject(parent)
 {
 }
 
-void AndroidBackend::setInstance(AndroidBackend* new_instance)
+void AndroidBackend::registerTypes(const char *uri)
 {
-   m_instance = new_instance;
+    qmlRegisterSingletonType<AndroidBackend>(uri, 1, 0, "Backend", AndroidBackend::singletonProvider);
+}
+
+QObject *AndroidBackend::singletonProvider(QQmlEngine* qmlEngine, QJSEngine *)
+{
+    if (!s_instance) {
+        s_instance = new AndroidBackend(qmlEngine);
+    }
+    return s_instance;
 }
 
 AndroidBackend *AndroidBackend::instance()
 {
-    return m_instance;
+    return static_cast<AndroidBackend*>(s_instance);
 }
 
 void AndroidBackend::init()

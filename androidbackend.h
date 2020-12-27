@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtAndroid>
+#include <QQmlEngine>
 
 class AndroidBackend : public QObject
 {
@@ -11,7 +12,8 @@ class AndroidBackend : public QObject
 
 public:
     explicit AndroidBackend(QObject *parent = nullptr);
-    static void setInstance(AndroidBackend* new_intance);
+    static void registerTypes(const char *uri);
+    static QObject *singletonProvider(QQmlEngine* , QJSEngine *);
     static AndroidBackend* instance();
     void init();
     QString getPdfFile() const;
@@ -45,7 +47,6 @@ public slots:
     void gotConversionFailure(const QString& error_message);
 
 private:
-    static AndroidBackend* m_instance;
     QString m_pdf_file;
     QAndroidJniObject m_intent_open_object_uri;
     QAndroidJniObject m_file_selected_uri;
