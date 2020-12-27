@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS language="fr_FR" version="2.1">
 <context>
     <name>DesktopBackend</name>
     <message>
@@ -19,7 +19,7 @@
     <message>
         <location line="10" filename="../main.qml"/>
         <source>Unoconv</source>
-        <translation>Unocon</translation>
+        <translation>Unoconv</translation>
     </message>
     <message>
         <location line="26" filename="../main.qml"/>
