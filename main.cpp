@@ -29,6 +29,12 @@ int main(int argc, char *argv[])
         qDebug() << "Couldn't load :/translations/UnoconvUI_" + locale.name() + ".qm";
 
     QQmlApplicationEngine engine;
+#ifdef Q_OS_ANDROID
+	AndroidBackend::registerTypes("org.scotthamilton.unoconvui");
+#else
+	DesktopBackend::registerTypes("org.scotthamilton.unoconvui");
+#endif
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -36,22 +42,18 @@ int main(int argc, char *argv[])
             QApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-#ifdef Q_OS_ANDROID
-    AndroidBackend androidBackend;
-    AndroidBackend::setInstance(&androidBackend);
-    engine.rootContext()->setContextProperty("backend", &androidBackend);
-#else
-    DesktopBackend desktopBackend;
-    engine.rootContext()->setContextProperty("backend", &desktopBackend);
-#endif
-
-
     engine.load(url);
 
 #ifdef Q_OS_ANDROID
-    androidBackend.init();
+	auto androidBackend = AndroidBackend::instance();
 #else
-    desktopBackend.init();
+	auto desktopBackend = DesktopBackend::instance();
+#endif
+
+#ifdef Q_OS_ANDROID
+    androidBackend->init();
+#else
+    desktopBackend->init();
 #endif
 
     return app.exec();

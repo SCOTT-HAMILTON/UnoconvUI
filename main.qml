@@ -1,6 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 
+import org.scotthamilton.unoconvui 1.0
+
 ApplicationWindow {
     id: root
     width: 640
@@ -8,7 +10,7 @@ ApplicationWindow {
     visible: true
     title: qsTr("Unoconv")
 
-    property bool got_startup_intent: false
+	property bool got_startup_intent: false
 
     Rectangle {
         id: errorBox
@@ -66,13 +68,13 @@ ApplicationWindow {
                 errorBox.clean_anim()
             }
         }
-        Connections {
-            target: backend
-            function onConversionFailure (error_message) {
-                errorBox.visible = true
-                errorBox.show_error(error_message)
-            }
-        }
+		function onConversionFailure (error_message) {
+			errorBox.visible = true
+			errorBox.show_error(error_message)
+		}
+		Component.onCompleted: {
+			Backend.conversionFailure.connect(onConversionFailure);
+		}
     }
 
     Button {
@@ -106,63 +108,70 @@ ApplicationWindow {
             }
         ]
 
-        Connections {
-            target: backend
-
-            function onIntentOpenDocument() {
-                root.got_startup_intent = true
-                button.state = "convert";
-            }
-            function onReadyForFileSelection() {
-                root.got_startup_intent = false
-                button.state = "select-file";
-            }
-            function onNoStartupIntent() {
-                root.got_startup_intent = false
-                button.state = "select-file";
-            }
-            function onFileSelected() {
-                button.state = "converting";
-            }
-            function onFileConverted(pdf_file) {
-                button.state = "open";
-            }
-            function onPermissionsGranted() {
-                if (root.got_startup_intent) {
-                    button.state = "convert";
-                } else {
-                    button.state = "select-file";
-                }
-            }
-            function onPermissionsDenied() {
-                button.state = "grant-permissions";
-            }
-            function onConversionFailure(error_message) {
-                button.state = "convert";
-            }
-        }
+		function onIntentOpenDocument() {
+			root.got_startup_intent = true
+			button.state = "convert";
+		}
+		function onReadyForFileSelection() {
+			console.log("Received Ready for File Selection");
+			root.got_startup_intent = false
+			button.state = "select-file";
+		}
+		function onNoStartupIntent() {
+			root.got_startup_intent = false
+			button.state = "select-file";
+		}
+		function onFileSelected() {
+			button.state = "converting";
+		}
+		function onFileConverted(pdf_file) {
+			button.state = "open";
+		}
+		function onPermissionsGranted() {
+			if (root.got_startup_intent) {
+				button.state = "convert";
+			} else {
+				button.state = "select-file";
+			}
+		}
+		function onPermissionsDenied() {
+			button.state = "grant-permissions";
+		}
+		function onConversionFailure(error_message) {
+			button.state = "convert";
+		}
 
         onClicked: {
             switch (state) {
             case "select-file":
-                backend.openFileDialog()
+                Backend.openFileDialog()
                 break
             case "convert":
                 if (root.got_startup_intent) {
-                    backend.convertIntent()
+                    Backend.convertIntent()
                 } else {
-                    backend.convertSelectedFile()
+                    Backend.convertSelectedFile()
                 }
                 button.state = "converting"
                 break
             case "open":
-                backend.openPdf(backend.pdf_file)
+                Backend.openPdf(Backend.pdf_file)
                 break
             case "grant-permissions":
-                backend.grantPermissions()
+                Backend.grantPermissions()
                 break
             }
-        }
+		}
+		Component.onCompleted: {
+			Backend.intentOpenDocument.connect(onIntentOpenDocument)
+			Backend.readyForFileSelection.connect(onReadyForFileSelection)
+			Backend.noStartupIntent.connect(onNoStartupIntent)
+			Backend.fileSelected.connect(onFileSelected)
+			Backend.fileConverted.connect(onFileConverted)
+			Backend.permissionsGranted.connect(onPermissionsGranted)
+			Backend.permissionsDenied.connect(onPermissionsDenied)
+			Backend.conversionFailure.connect(onConversionFailure)
+		}
     }
 
     BusyIndicator {
@@ -183,12 +192,12 @@ ApplicationWindow {
             id: debugErrorArea
             readOnly: true
             text: "Debug Area : \n"
-            Connections {
-                target: backend
-                function onDebugChangeErrorArea(text) {
-                    debugErrorArea.text += "\n - "+text
-                }
-            }
+			function onDebugChangeErrorArea(text) {
+				debugErrorArea.text += "\n - "+text
+			}
+			Component.onCompleted: {
+				Backend.debugChangeErrorArea.connect(onDebugChangeErrorArea)
+			}
         }
     }
 }

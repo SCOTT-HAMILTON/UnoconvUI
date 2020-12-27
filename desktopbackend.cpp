@@ -12,14 +12,35 @@
 #include <QNetworkRequest>
 #include <QUrl>
 
+static DesktopBackend *s_instance = nullptr;
+
 DesktopBackend::DesktopBackend(QObject *parent) : QObject(parent),
     m_host("192.168.1.23"), m_reply(nullptr)
 {
+	qDebug() << "Desktop Backend Created !!!";
+}
 
+void DesktopBackend::registerTypes(const char *uri)
+{
+    qmlRegisterSingletonType<DesktopBackend>(uri, 1, 0, "Backend", DesktopBackend::singletonProvider);
+}
+
+DesktopBackend* DesktopBackend::instance()
+{
+	return static_cast<DesktopBackend*>(s_instance);
+}
+
+QObject *DesktopBackend::singletonProvider(QQmlEngine *qmlEngine, QJSEngine *)
+{
+    if (!s_instance) {
+        s_instance = new DesktopBackend(qmlEngine);
+    }
+    return s_instance;
 }
 
 void DesktopBackend::init()
 {
+	qDebug() << "Emotted";
     emit readyForFileSelection();
 }
 
