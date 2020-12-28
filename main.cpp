@@ -17,6 +17,10 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    QCoreApplication::setOrganizationName("Scott Hamilton Apps");
+    QCoreApplication::setOrganizationDomain("scotthamilton.org");
+    QCoreApplication::setApplicationName("Unoconv UI");
+
     QTranslator translator;
     QLocale locale;//(QLocale::English, QLocale::UnitedStates);
     qDebug() << "locale : " << locale.name();

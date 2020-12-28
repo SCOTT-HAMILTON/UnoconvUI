@@ -1,4 +1,5 @@
 #include "desktopbackend.h"
+#include "settings.hpp"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -12,10 +13,12 @@
 #include <QNetworkRequest>
 #include <QUrl>
 
+#include <QSettings>
+
 static DesktopBackend *s_instance = nullptr;
 
 DesktopBackend::DesktopBackend(QObject *parent) : QObject(parent),
-    m_host("192.168.1.23"), m_reply(nullptr)
+    m_reply(nullptr)
 {
 	qDebug() << "Desktop Backend Created !!!";
 }
@@ -49,6 +52,30 @@ QString DesktopBackend::getPdfFile() const
     return m_pdf_file;
 }
 
+QString DesktopBackend::getWebServiceAddressSetting()
+{
+    QSettings settings;
+    auto addressValue = settings.value(WEBSERVICE_ADDRESS);
+    if (addressValue == QVariant()) {
+        setWebServiceAddressSetting(WEBSERVICE_DEFAULT_ADDRESS, false);
+        return WEBSERVICE_DEFAULT_ADDRESS;
+    } else {
+        return addressValue.toString();
+    }
+}
+
+int DesktopBackend::getWebServicePortSetting()
+{
+    QSettings settings;
+    auto portValue = settings.value(WEBSERVICE_PORT);
+    if (portValue == QVariant()) {
+        setWebServicePortSetting(WEBSERVICE_DEFAULT_PORT, false);
+        return WEBSERVICE_DEFAULT_PORT;
+    } else {
+        return portValue.toInt();
+    }
+}
+
 void DesktopBackend::openFileDialog()
 {
     QString filename = QFileDialog::getOpenFileName(nullptr,
@@ -71,6 +98,50 @@ void DesktopBackend::openPdf(const QString &pdf_file)
 void DesktopBackend::convertSelectedFile()
 {
     convertFile(m_selected_file);
+}
+
+void DesktopBackend::setWebServiceAddressSetting(const QString &address, bool informUi)
+{
+    QUrl url(address);
+    if (!url.isValid()) {
+        qDebug() << "[error] invalid web service address : " << address;
+        if (informUi) {
+            emit settingFailure(tr("Invalid Web Service Address !"));
+        }
+    } else if (url.scheme().isEmpty()) {
+        qDebug() << "[error] invalid web service address, no scheme : " << address;
+        if (informUi) {
+            emit settingFailure(tr("Address needs a scheme (for exemple https://)"));
+        }
+    } else {
+        {
+            QSettings settings;
+            settings.setValue(WEBSERVICE_ADDRESS, address);
+        }
+        qDebug() << "[log] successfully saved web service address";
+        if (informUi) {
+            emit settingSuccess(tr("Web Service Address Saved !"));
+        }
+    }
+}
+
+void DesktopBackend::setWebServicePortSetting(int port, bool informUi)
+{
+    if (port < 0 || port > 100000) {
+        qDebug() << "[error] invalid web service port, not in range [0;100 000] : " << port;
+        if (informUi) {
+            emit settingFailure(tr("Invalid Web Service Port, not in range [0;100 000]"));
+        }
+    } else {
+        {
+            QSettings settings;
+            settings.setValue(WEBSERVICE_PORT, port);
+        }
+        qDebug() << "[log] successfully saved web service port";
+        if (informUi) {
+            emit settingSuccess(tr("Web Service Port Saved !"));
+        }
+    }
 }
 
 void DesktopBackend::onRequestReplyFinished()
@@ -147,7 +218,12 @@ void DesktopBackend::convertFile(const QString &filename)
         file->setParent(multiPart);
         multiPart->append(filePart);
 
-        QUrl url("http://"+m_host+"/unoconv/pdf");
+        auto settings_address = getWebServiceAddressSetting();
+        auto settings_port = getWebServicePortSetting();
+
+        QUrl url(settings_address);
+        url.setPort(settings_port);
+
         QNetworkRequest request(url);
 #if QT_VERSION >= 0x051400
         request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);

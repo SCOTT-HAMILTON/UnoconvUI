@@ -14,11 +14,12 @@ unix:android: SOURCES += nativefunctions.cpp \
                          androidbackend.cpp
 else: SOURCES += desktopbackend.cpp
 
-
+HEADERS += settings.hpp
 unix:android: HEADERS += androidbackend.h
 else: HEADERS += desktopbackend.h
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    icons.qrc
 
 RC_ICONS = icon.ico
 
@@ -87,4 +88,5 @@ DISTFILES += \
 
 unix:android: \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
 

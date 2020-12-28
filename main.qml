@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
 
 import org.scotthamilton.unoconvui 1.0
 
@@ -10,8 +11,7 @@ ApplicationWindow {
     visible: true
     title: qsTr("Unoconv")
 
-	property bool got_startup_intent: false
-
+    property bool got_startup_intent: false
     Rectangle {
         id: errorBox
         width: errorLabel.width*1.07
@@ -34,15 +34,11 @@ ApplicationWindow {
             errorBox.visible = true
             errorBoxLifecycleAnimation.start()
         }
-        ScrollView {
-            width: errorLabel.width>=root.width*0.7?root.width*0.7:errorLabel.width
-            anchors.centerIn: parent
-            Text {
-                id: errorLabel
-                anchors.fill: parent
-                text: ""
-                font.pointSize: 12
-            }
+        Text {
+            id: errorLabel
+            text: ""
+            anchors.centerIn: errorBox
+            font.pointSize: 12
         }
         SequentialAnimation {
             id: errorBoxLifecycleAnimation
@@ -68,136 +64,316 @@ ApplicationWindow {
                 errorBox.clean_anim()
             }
         }
-		function onConversionFailure (error_message) {
-			errorBox.visible = true
-			errorBox.show_error(error_message)
-		}
-		Component.onCompleted: {
-			Backend.conversionFailure.connect(onConversionFailure);
-		}
+        function onConversionFailure (error_message) {
+            errorBox.visible = true
+            errorBox.show_error(error_message)
+        }
+        Component.onCompleted: {
+            Backend.conversionFailure.connect(onConversionFailure);
+        }
     }
 
-    Button {
-        id: button
-        highlighted: true
-        x: root.width/2-width/2
-        y: root.height*0.4-height/2
-        state: ""
-        width: root.width*0.5
-        padding: root.width*0.04
-        states: [
-            State {
-                name: "select-file"
-                PropertyChanges { target: button; text: qsTr("Select a file"); enabled: true }
-            },
-            State {
-                name: "converting"
-                PropertyChanges { target: button; text: qsTr("Converting..."); enabled: false }
-            },
-            State {
-                name: "convert"
-                PropertyChanges { target: button; text: qsTr("Convert"); enabled: true }
-            },
-            State {
-                name: "open"
-                PropertyChanges { target: button; text: qsTr("Open"); enabled: true }
-            },
-            State {
-                name: "grant-permissions"
-                PropertyChanges { target: button; text: qsTr("Grant Permissions"); enabled: true }
-            }
-        ]
+    SwipeView {
+        id: view
 
-		function onIntentOpenDocument() {
-			root.got_startup_intent = true
-			button.state = "convert";
-		}
-		function onReadyForFileSelection() {
-			console.log("Received Ready for File Selection");
-			root.got_startup_intent = false
-			button.state = "select-file";
-		}
-		function onNoStartupIntent() {
-			root.got_startup_intent = false
-			button.state = "select-file";
-		}
-		function onFileSelected() {
-			button.state = "converting";
-		}
-		function onFileConverted(pdf_file) {
-			button.state = "open";
-		}
-		function onPermissionsGranted() {
-			if (root.got_startup_intent) {
-				button.state = "convert";
-			} else {
-				button.state = "select-file";
-			}
-		}
-		function onPermissionsDenied() {
-			button.state = "grant-permissions";
-		}
-		function onConversionFailure(error_message) {
-			button.state = "convert";
-		}
+        currentIndex: 0
+        x: 0
+        y: 0
+        width: root.width
+        height: root.height
 
-        onClicked: {
-            switch (state) {
-            case "select-file":
-                Backend.openFileDialog()
-                break
-            case "convert":
-                if (root.got_startup_intent) {
-                    Backend.convertIntent()
-                } else {
-                    Backend.convertSelectedFile()
+        Item {
+            id: firstPage
+
+            Button {
+                id: button
+                highlighted: true
+                x: root.width/2-width/2
+                y: root.height*0.3-height/2
+                state: ""
+                width: root.width*0.5
+                padding: root.width*0.04
+                states: [
+                    State {
+                        name: "select-file"
+                        PropertyChanges { target: button; text: qsTr("Select a file"); enabled: true }
+                    },
+                    State {
+                        name: "converting"
+                        PropertyChanges { target: button; text: qsTr("Converting..."); enabled: false }
+                    },
+                    State {
+                        name: "convert"
+                        PropertyChanges { target: button; text: qsTr("Convert"); enabled: true }
+                    },
+                    State {
+                        name: "open"
+                        PropertyChanges { target: button; text: qsTr("Open"); enabled: true }
+                    },
+                    State {
+                        name: "grant-permissions"
+                        PropertyChanges { target: button; text: qsTr("Grant Permissions"); enabled: true }
+                    }
+                ]
+
+                function onIntentOpenDocument() {
+                    root.got_startup_intent = true
+                    button.state = "convert";
                 }
-                button.state = "converting"
-                break
-            case "open":
-                Backend.openPdf(Backend.pdf_file)
-                break
-            case "grant-permissions":
-                Backend.grantPermissions()
-                break
+                function onReadyForFileSelection() {
+                    console.log("Received Ready for File Selection");
+                    root.got_startup_intent = false
+                    button.state = "select-file";
+                }
+                function onNoStartupIntent() {
+                    root.got_startup_intent = false
+                    button.state = "select-file";
+                }
+                function onFileSelected() {
+                    button.state = "converting";
+                }
+                function onFileConverted(pdf_file) {
+                    button.state = "open";
+                }
+                function onPermissionsGranted() {
+                    if (root.got_startup_intent) {
+                        button.state = "convert";
+                    } else {
+                        button.state = "select-file";
+                    }
+                }
+                function onPermissionsDenied() {
+                    button.state = "grant-permissions";
+                }
+                function onConversionFailure(error_message) {
+                    button.state = "convert";
+                }
+
+                onClicked: {
+                    switch (state) {
+                    case "select-file":
+                        Backend.openFileDialog()
+                        break
+                    case "convert":
+                        if (root.got_startup_intent) {
+                            Backend.convertIntent()
+                        } else {
+                            Backend.convertSelectedFile()
+                        }
+                        button.state = "converting"
+                        break
+                    case "open":
+                        Backend.openPdf(Backend.pdf_file)
+                        break
+                    case "grant-permissions":
+                        Backend.grantPermissions()
+                        break
+                    }
+                }
+                Component.onCompleted: {
+                    Backend.intentOpenDocument.connect(onIntentOpenDocument)
+                    Backend.readyForFileSelection.connect(onReadyForFileSelection)
+                    Backend.noStartupIntent.connect(onNoStartupIntent)
+                    Backend.fileSelected.connect(onFileSelected)
+                    Backend.fileConverted.connect(onFileConverted)
+                    Backend.permissionsGranted.connect(onPermissionsGranted)
+                    Backend.permissionsDenied.connect(onPermissionsDenied)
+                    Backend.conversionFailure.connect(onConversionFailure)
+                }
             }
-		}
-		Component.onCompleted: {
-			Backend.intentOpenDocument.connect(onIntentOpenDocument)
-			Backend.readyForFileSelection.connect(onReadyForFileSelection)
-			Backend.noStartupIntent.connect(onNoStartupIntent)
-			Backend.fileSelected.connect(onFileSelected)
-			Backend.fileConverted.connect(onFileConverted)
-			Backend.permissionsGranted.connect(onPermissionsGranted)
-			Backend.permissionsDenied.connect(onPermissionsDenied)
-			Backend.conversionFailure.connect(onConversionFailure)
-		}
+
+            BusyIndicator {
+                id: convertingIndicator
+                running: button.state === "converting"
+                anchors.horizontalCenter: button.horizontalCenter
+                anchors.top: button.bottom
+                anchors.topMargin: root.height*0.01
+
+            }
+
+            ScrollView {
+                width: root.width*0.8
+                height: root.height*0.3
+                anchors.horizontalCenter: button.horizontalCenter
+                y: root.height*0.8-height
+                focusPolicy: Qt.NoFocus
+                TextArea {
+                    id: debugErrorArea
+                    readOnly: true
+                    text: "Debug Area : \n"
+                    Keys.onPressed: {
+                        event.accepted = false;
+                    }
+
+                    function onDebugChangeErrorArea(text) {
+                        debugErrorArea.text += "\n - "+text
+                    }
+                    Component.onCompleted: {
+                        Backend.debugChangeErrorArea.connect(onDebugChangeErrorArea)
+                    }
+                }
+            }
+        }
+        Item {
+            id: secondPage
+            Text {
+                id: settingsPageHeader
+                x: root.width/2-width/2
+                y: root.height*0.1
+                color: "#FFFFFF"
+                text: qsTr("Settings Page")
+                font.pointSize: 20
+                font.bold: true
+                font.capitalization: Font.AllUppercase
+            }
+            Text {
+                id: labelWebServiceAddressInput
+                x: root.width*0.1
+                y: root.height*0.3
+                color: "#FFFFFF"
+                text: qsTr("Web Service Address (with the schema) : ")
+            }
+            TextField {
+                id: webServiceAddressInput
+                anchors.verticalCenter: labelWebServiceAddressInput.verticalCenter
+                anchors.left: labelWebServiceAddressInput.right
+                anchors.leftMargin: root.width*0.03
+                width: root.width*0.8-labelWebServiceAddressInput.width
+                placeholderText: qsTr("exemple : http://192.168.1.23")
+                Component.onCompleted: {
+                    text = Backend.getWebServiceAddressSetting()
+                }
+            }
+            Text {
+                id: labelWebServicePortInput
+                anchors.right: labelWebServiceAddressInput.right
+                anchors.top: labelWebServiceAddressInput.bottom
+                anchors.topMargin: root.height*0.07
+                color: "#FFFFFF"
+                text: qsTr("Web Service Port : ")
+            }
+            SpinBox {
+                id: webServicePortInput
+                anchors.verticalCenter: labelWebServicePortInput.verticalCenter
+                anchors.left: labelWebServicePortInput.right
+                anchors.leftMargin: root.width*0.03
+                width: webServiceAddressInput.width
+                editable: true
+                from: 0
+                to: 1000000
+                Component.onCompleted: {
+                    value = Backend.getWebServicePortSetting()
+                }
+            }
+            Button {
+                id: validateSettingsButton
+                x: root.width/2-width/2
+                anchors.top: webServicePortInput.bottom
+                anchors.topMargin: root.height*0.04
+                text: qsTr("Validate Changes")
+                highlighted: true
+                enabled: false
+                // Bad stuff to fix input initialisations
+                property bool firstAddressChange: true
+                property bool firstPortChange: true
+                property var currentAddressSetting: ""
+                property var currentPortSetting: 0
+                Connections {
+                    target: webServiceAddressInput
+                    function onTextChanged() {
+                        if (!validateSettingsButton.firstAddressChange) {
+                            validateSettingsButton.enabled =
+                                    webServiceAddressInput.text !== validateSettingsButton.currentAddressSetting ||
+                                    webServicePortInput.value !== validateSettingsButton.currentPortSetting
+                        } else {
+                            validateSettingsButton.firstAddressChange = false
+                        }
+                    }
+                }
+                Connections {
+                    target: webServicePortInput
+                    function onValueChanged() {
+                        if (!validateSettingsButton.firstPortChange) {
+                            validateSettingsButton.enabled =
+                                    webServiceAddressInput.text !== validateSettingsButton.currentAddressSetting ||
+                                    webServicePortInput.value !== validateSettingsButton.currentPortSetting
+                        } else {
+                            validateSettingsButton.firstPortChange = false
+                        }
+                    }
+                }
+                Component.onCompleted: {
+                    currentAddressSetting = Backend.getWebServiceAddressSetting()
+                    currentPortSetting = Backend.getWebServicePortSetting()
+                }
+                onClicked: {
+                    if (webServiceAddressInput.text !== currentAddressSetting) {
+                        Backend.setWebServiceAddressSetting(webServiceAddressInput.text)
+                        currentAddressSetting = webServiceAddressInput.text
+                        validateSettingsButton.enabled = false
+                    }
+                    if (webServicePortInput.text !== currentPortSetting) {
+                        Backend.setWebServicePortSetting(webServicePortInput.value)
+                        currentPortSetting = webServicePortInput.value
+                        validateSettingsButton.enabled = false
+                    }
+                }
+            }
+        }
     }
-
-    BusyIndicator {
-        id: convertingIndicator
-        running: button.state === "converting"
-        anchors.horizontalCenter: button.horizontalCenter
-        anchors.top: button.bottom
-        anchors.topMargin: root.height*0.01
-
+    ToolButton {
+        id: goLeftButton
+        visible: view.currentIndex > 0
+        x: root.width*0.01
+        y: root.height*0.01
+        icon.source: "icons/left-arrow.svg"
+        icon.width: root.width*0.07
+        icon.height: root.width*0.07
+        icon.color: Material.color(Material.accentColor)
+        onClicked: {
+            if (view.currentIndex-1 >= 0) {
+                view.setCurrentIndex(view.currentIndex-1)
+            }
+        }
     }
+    ToolButton {
+        id: goRightButton
+        visible: view.currentIndex < view.count-1
+        x: root.width-root.width*0.01-width
+        y: root.height*0.01
+        icon.source: "icons/right-arrow.svg"
+        icon.width: root.width*0.07
+        icon.height: root.width*0.07
+        icon.color: Material.color(Material.accentColor)
+        onClicked: {
+            if (view.currentIndex+1 < view.count) {
+                view.setCurrentIndex(view.currentIndex+1)
+            }
+        }
+    }
+    PageIndicator {
+        id: indicator
 
-    ScrollView {
-        width: root.width*0.8
-        height: root.height*0.3
-        anchors.horizontalCenter: button.horizontalCenter
-        y: root.height*0.99-height
-        TextArea {
-            id: debugErrorArea
-            readOnly: true
-            text: "Debug Area : \n"
-			function onDebugChangeErrorArea(text) {
-				debugErrorArea.text += "\n - "+text
-			}
-			Component.onCompleted: {
-				Backend.debugChangeErrorArea.connect(onDebugChangeErrorArea)
-			}
+        count: view.count
+        currentIndex: view.currentIndex
+
+        anchors.bottom: view.bottom
+        anchors.horizontalCenter: view.horizontalCenter
+    }
+    Shortcut {
+        sequence: StandardKey.Forward
+        onActivated: {
+            if (view.currentIndex+1 < view.count) {
+                view.setCurrentIndex(view.currentIndex+1)
+            }
+        }
+    }
+    Shortcut {
+        sequence: StandardKey.Back
+        onActivated: {
+            if (view.currentIndex-1 >= 0) {
+                view.setCurrentIndex(view.currentIndex-1)
+            }
         }
     }
 }

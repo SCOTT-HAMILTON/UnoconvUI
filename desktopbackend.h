@@ -14,8 +14,11 @@ public:
 	static void registerTypes(const char *uri);
 	static QObject *singletonProvider(QQmlEngine* , QJSEngine *);
 	static DesktopBackend* instance();
-	Q_INVOKABLE void init();
-	QString getPdfFile() const;
+    Q_INVOKABLE void init();
+    QString getPdfFile() const;
+
+    Q_INVOKABLE QString getWebServiceAddressSetting();
+    Q_INVOKABLE int getWebServicePortSetting();
 
 signals:
 	void readyForFileSelection();
@@ -23,6 +26,8 @@ signals:
 	void fileConverted(QString);
 	void debugChangeErrorArea(QString);
 	void conversionFailure(QString);
+    void settingFailure(QString);
+    void settingSuccess(QString);
 
 	// Not to be used, just for letting QML be happy
 	void intentOpenDocument();
@@ -30,11 +35,13 @@ signals:
 	void permissionsGranted();
 	void permissionsDenied();
 
-	public slots:
-		Q_INVOKABLE void openFileDialog();
+public slots:
+    Q_INVOKABLE void openFileDialog();
 	Q_INVOKABLE void openPdf(const QString& pdf_file);
-	Q_INVOKABLE void convertSelectedFile();
-	void onRequestReplyFinished();
+    Q_INVOKABLE void convertSelectedFile();
+    Q_INVOKABLE void setWebServiceAddressSetting(const QString& address, bool informUi = true);
+    Q_INVOKABLE void setWebServicePortSetting(int port, bool informUi = true);
+    void onRequestReplyFinished();
 	void onRequestReplyUploadProgress(qint64 bytesSent, qint64 bytesTotal);
 	void onRequestReplyDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 	void onRequestReplyErrorOccured(QNetworkReply::NetworkError errorCode);
@@ -43,10 +50,9 @@ private:
 	QString m_pdf_file;
 	QString m_selected_file;
 	QString m_file_to_convert_basename;
-	QString m_host;
 	QNetworkReply* m_reply;
 
-	void convertFile(const QString& filename);
+    void convertFile(const QString& filename);
 
 };
 
