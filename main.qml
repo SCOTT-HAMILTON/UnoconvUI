@@ -216,6 +216,11 @@ ApplicationWindow {
         }
         Item {
             id: secondPage
+            property bool stacked: root.width/webServiceAddressInput.contentWidth<2.5
+            Component.onCompleted: {
+                console.log(root.width+", "+webServiceAddressInput.contentWidth+", "+root.width/webServiceAddressInput.contentWidth)
+            }
+
             Text {
                 id: settingsPageHeader
                 x: root.width/2-width/2
@@ -228,48 +233,125 @@ ApplicationWindow {
             }
             Text {
                 id: labelWebServiceAddressInput
-                x: root.width*0.1
-                y: root.height*0.3
+                property var xNormal: root.width*0.1
+                property var yNormal: root.height*0.3
+                property var xStacked: root.width/2-width/2
+                property var yStacked: root.height*0.3
+                state: secondPage.stacked?"stacked":"normal"
+                states: [
+                    State {
+                        name: "normal"
+                        PropertyChanges {
+                            target: labelWebServiceAddressInput
+                            x: xNormal; y: yNormal
+                        }
+                    },
+                    State {
+                        name: "stacked"
+                        PropertyChanges {
+                            target: labelWebServiceAddressInput
+                            x: xStacked; y: yStacked
+                        }
+                    }
+                ]
                 color: "#FFFFFF"
                 text: qsTr("Web Service Address (with the schema) : ")
+                font.bold: true
             }
             TextField {
                 id: webServiceAddressInput
-                anchors.verticalCenter: labelWebServiceAddressInput.verticalCenter
-                anchors.left: labelWebServiceAddressInput.right
-                anchors.leftMargin: root.width*0.03
-                width: root.width*0.8-labelWebServiceAddressInput.width
+                width: (secondPage.stacked)?
+                    (root.width*0.8):
+                    (root.width*0.8-labelWebServiceAddressInput.width)
+                property var xNormal: labelWebServiceAddressInput.x+labelWebServiceAddressInput.width+root.width*0.03
+                property var yNormal: labelWebServiceAddressInput.y+labelWebServiceAddressInput.height/2-height/2
+                property var xStacked: root.width/2-width/2
+                property var yStacked: labelWebServiceAddressInput.yStacked+labelWebServiceAddressInput.height+root.height*0.03
+                state: secondPage.stacked?"stacked":"normal"
+                states: [
+                    State {
+                        name: "normal"
+                        PropertyChanges {
+                            target: webServiceAddressInput
+                            x: xNormal; y: yNormal
+                        }
+                    },
+                    State {
+                        name: "stacked"
+                        PropertyChanges {
+                            target: webServiceAddressInput
+                            x: xStacked; y: yStacked
+                        }
+                    }
+                ]
                 placeholderText: qsTr("exemple : http://192.168.1.23")
+                horizontalAlignment: secondPage.stacked?Text.AlignHCenter:Text.AlignLeft
                 Component.onCompleted: {
-                    text = Backend.getWebServiceAddressSetting()
+                    text = SettingsBackend.getWebServiceAddressSetting()
                 }
             }
             Text {
                 id: labelWebServicePortInput
-                anchors.right: labelWebServiceAddressInput.right
-                anchors.top: labelWebServiceAddressInput.bottom
-                anchors.topMargin: root.height*0.07
+                property var xNormal: labelWebServiceAddressInput.x+labelWebServiceAddressInput.width-width
+                property var yNormal: labelWebServiceAddressInput.y+labelWebServiceAddressInput.height+root.height*0.07
+                property var xStacked: root.width/2-width/2
+                property var yStacked: webServiceAddressInput.yStacked+webServiceAddressInput.height+root.height*0.03
+                state: secondPage.stacked?"stacked":"normal"
+                states: [
+                    State {
+                        name: "normal"
+                        PropertyChanges {
+                            target: labelWebServicePortInput
+                            x: xNormal; y: yNormal
+                        }
+                    },
+                    State {
+                        name: "stacked"
+                        PropertyChanges {
+                            target: labelWebServicePortInput
+                            x: xStacked; y: yStacked
+                        }
+                    }
+                ]
                 color: "#FFFFFF"
                 text: qsTr("Web Service Port : ")
+                font.bold: true
             }
             SpinBox {
                 id: webServicePortInput
-                anchors.verticalCenter: labelWebServicePortInput.verticalCenter
-                anchors.left: labelWebServicePortInput.right
-                anchors.leftMargin: root.width*0.03
                 width: webServiceAddressInput.width
+                property var xNormal: labelWebServicePortInput.x+labelWebServicePortInput.width+root.width*0.03
+                property var yNormal: labelWebServicePortInput.y+labelWebServicePortInput.height/2-height/2
+                property var xStacked: root.width/2-width/2
+                property var yStacked: labelWebServicePortInput.yStacked+labelWebServicePortInput.height+root.height*0.03
+                state: secondPage.stacked?"stacked":"normal"
+                states: [
+                    State {
+                        name: "normal"
+                        PropertyChanges {
+                            target: webServicePortInput
+                            x: xNormal; y: yNormal
+                        }
+                    },
+                    State {
+                        name: "stacked"
+                        PropertyChanges {
+                            target: webServicePortInput
+                            x: xStacked; y: yStacked
+                        }
+                    }
+                ]
                 editable: true
                 from: 0
                 to: 1000000
                 Component.onCompleted: {
-                    value = Backend.getWebServicePortSetting()
+                    value = SettingsBackend.getWebServicePortSetting()
                 }
             }
             Button {
                 id: validateSettingsButton
                 x: root.width/2-width/2
-                anchors.top: webServicePortInput.bottom
-                anchors.topMargin: root.height*0.04
+                y: webServicePortInput.y+webServicePortInput.height+root.height*0.04
                 text: qsTr("Validate Changes")
                 highlighted: true
                 enabled: false
@@ -303,17 +385,17 @@ ApplicationWindow {
                     }
                 }
                 Component.onCompleted: {
-                    currentAddressSetting = Backend.getWebServiceAddressSetting()
-                    currentPortSetting = Backend.getWebServicePortSetting()
+                    currentAddressSetting = SettingsBackend.getWebServiceAddressSetting()
+                    currentPortSetting = SettingsBackend.getWebServicePortSetting()
                 }
                 onClicked: {
                     if (webServiceAddressInput.text !== currentAddressSetting) {
-                        Backend.setWebServiceAddressSetting(webServiceAddressInput.text)
+                        SettingsBackend.setWebServiceAddressSetting(webServiceAddressInput.text)
                         currentAddressSetting = webServiceAddressInput.text
                         validateSettingsButton.enabled = false
                     }
                     if (webServicePortInput.text !== currentPortSetting) {
-                        Backend.setWebServicePortSetting(webServicePortInput.value)
+                        SettingsBackend.setWebServicePortSetting(webServicePortInput.value)
                         currentPortSetting = webServicePortInput.value
                         validateSettingsButton.enabled = false
                     }

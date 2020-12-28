@@ -10,6 +10,7 @@
 #else
 #include "desktopbackend.h"
 #endif
+#include "settingsbackend.h"
 
 int main(int argc, char *argv[])
 {
@@ -38,6 +39,7 @@ int main(int argc, char *argv[])
 #else
 	DesktopBackend::registerTypes("org.scotthamilton.unoconvui");
 #endif
+    SettingsBackend::registerTypes("org.scotthamilton.unoconvui");
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

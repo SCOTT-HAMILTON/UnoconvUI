@@ -1,4 +1,4 @@
-QT += quick widgets
+QT += quick widgets svg
 unix:android: QT += androidextras
 else: QT += network gui
 
@@ -9,12 +9,14 @@ CONFIG += c++11 lrelease embed_translations
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        settingsbackend.cpp
 unix:android: SOURCES += nativefunctions.cpp \
                          androidbackend.cpp
 else: SOURCES += desktopbackend.cpp
 
-HEADERS += settings.hpp
+HEADERS += settings.hpp \
+    settingsbackend.h
 unix:android: HEADERS += androidbackend.h
 else: HEADERS += desktopbackend.h
 
