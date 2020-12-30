@@ -14,6 +14,7 @@ Unoconv UI requires :
  - rsvg-convert (provided by librsvg2)
 
 ### Qmake Building 
+
   To build it, run : 
 ```sh
   $ qmake QT_INSTALL_PREFIX=/usr # Or any prefix where you want to install Unoconv UI
@@ -27,6 +28,7 @@ _____________
 ### Installation
 
 # On Fedora : 
+
 ```sh
   $ sudo dnf config-manager --add-repo https://download.opensuse.org/repositories/home:/ScottHamilton/Fedora_31/home:ScottHamilton.repo
   $ sudo dnf install unoconvui
@@ -34,6 +36,7 @@ _____________
  > replace `Fedora_31` with your version, supported are `Fedora_30`, `Fedora_31`, `Fedora_32`, `Fedora_33` and `Fedora_Rawhide`
 
 # On openSuse : 
+
 ```sh
   $ sudo zypper ar -f https://download.opensuse.org/repositories/home:/ScottHamilton/openSUSE_Tumbleweed/home:ScottHamilton.repo ScottHamilton
   $ sudo zypper install unoconvui
@@ -43,7 +46,43 @@ _____________
 
 Others might be supported, check [Unoconv UI's OBS page](https://build.opensuse.org/package/show/home:ScottHamilton/UnoconvUI).
 
+# On NixOS or nix enabled distributions : 
+
+First configure NUR, see [NUR Configuration](https://github.com/nix-community/NUR#installation)
+Then you can install Unoconv UI.
+
+With the system `configuration.nix` file on NixOS : 
+```nix
+# configuration.nix
+{
+  environment.systemPackages = with pkgs; [
+    nur.repos.shamilton.unoconvui
+  ];
+}
+```
+Or with home-manager : 
+```nix
+# home.nix
+{
+  home.packages = [
+    nur.repos.shamilton.unoconvui
+  ];
+}
+```
+
+# On Android And Windows
+
+Apk for Android and Installer for Windows are comming in first release.
+
+# MacOS
+
+PR me if you want this on MacOS. It probably needs some modifications but I don't
+see anything that wouldn't work on MacOS. I can't maintain a build on that plateform though
+for obvious hardware reasons.
+
+
 ### Usage
+
 Here is the start page.
 Select a file and wan't for the web service to convert it.
 You can check debug area for some issues.
@@ -55,10 +94,12 @@ The settings page lets you set the address and the port of your web service.
  > NB : The Settings Page UI is responsive !
 
 ### Help
+
 Unoconv UI is just a little project, but feel free to fork, change, extend or correct the code or to add translations.
 
 ### Warning
-** As said above, this uses Qt and QML for the UI. The android app takes a lot of place becaus of the Qt libs, this can be reduced by using the ministro service. **
+
+**As said above, this uses Qt and QML for the UI. The android app takes a lot of place because of the Qt libs, this can be reduced by using the ministro service.**
 
 
 License
