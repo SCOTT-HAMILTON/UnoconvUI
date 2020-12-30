@@ -31,9 +31,8 @@ public class WebServiceFileConvertRunnable implements Runnable
         public WebServiceFileConvertRunnable(MyActivity activity, Uri input_file_uri) {
                 m_activity = activity;
                 m_input_file_uri = input_file_uri;
-                }
-        // this method is called on Android Ui Thread
-
+		}
+		// https://stackoverflow.com/a/59049496
         public static byte[] readAllBytes(InputStream inputStream) throws IOException {
              final int bufLen = 4 * 0x400; // 4KB
              byte[] buf = new byte[bufLen];
@@ -61,7 +60,7 @@ public class WebServiceFileConvertRunnable implements Runnable
          }
 
         // Copy an InputStream to a File.
-        //
+        // https://stackoverflow.com/a/28131358
         private void copyInputStreamToFile(InputStream in, File file) {
                 OutputStream out = null;
                 long total_length = 0;
