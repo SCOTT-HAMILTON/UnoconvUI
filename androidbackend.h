@@ -30,6 +30,7 @@ signals:
 
     // Not to be used, just for letting QML be happy
     void readyForFileSelection();
+    void fileSelectionFailure(QString);
 
 public slots:
     Q_INVOKABLE void openFileDialog();

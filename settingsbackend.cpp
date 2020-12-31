@@ -1,6 +1,8 @@
 #include "settingsbackend.h"
 #include "settings.hpp"
 
+#include <QDebug>
+
 static SettingsBackend *s_instance = nullptr;
 
 SettingsBackend::SettingsBackend(QObject *parent) : QObject(parent)

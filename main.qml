@@ -64,12 +64,13 @@ ApplicationWindow {
                 errorBox.clean_anim()
             }
         }
-        function onConversionFailure (error_message) {
+        function onFailure (error_message) {
             errorBox.visible = true
             errorBox.show_error(error_message)
         }
         Component.onCompleted: {
-            Backend.conversionFailure.connect(onConversionFailure);
+            Backend.conversionFailure.connect(onFailure);
+            Backend.fileSelectionFailure.connect(onFailure);
         }
     }
 

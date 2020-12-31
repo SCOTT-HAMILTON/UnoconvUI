@@ -56,9 +56,15 @@ void DesktopBackend::openFileDialog()
         tr("Open File to Convert"),
         QStandardPaths::writableLocation(QStandardPaths::DownloadLocation),
         tr("Any File Supported by Unoconv (*.*)"));
-    m_selected_file = filename;
-    emit fileSelected();
-    convertFile(filename);
+    if (filename == "") {
+        emit debugChangeErrorArea("No file selected");
+        emit fileSelectionFailure(tr("No file selected"));
+        qDebug() << "[log] No file selected";
+    } else {
+        m_selected_file = filename;
+        emit fileSelected();
+        convertFile(filename);
+    }
 }
 
 void DesktopBackend::openPdf(const QString &pdf_file)
@@ -131,6 +137,7 @@ void DesktopBackend::convertFile(const QString &filename)
     if (!file->exists()) {
         qDebug() << "[error] filename to convert `" << filename << "`, doesn't exist";
         emit debugChangeErrorArea("filename to convert `" + filename + "`, doesn't exist");
+        emit conversionFailure(tr("File to convert doesn't exist"));
     } else {
         file->open(QIODevice::ReadOnly);
         QString input_file_basename;

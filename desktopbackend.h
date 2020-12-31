@@ -22,7 +22,8 @@ signals:
 	void fileSelected();
 	void fileConverted(QString);
 	void debugChangeErrorArea(QString);
-	void conversionFailure(QString);
+    void conversionFailure(QString);
+    void fileSelectionFailure(QString);
 
 	// Not to be used, just for letting QML be happy
 	void intentOpenDocument();
