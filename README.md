@@ -3,7 +3,7 @@
 ![Travis CI build status](https://travis-ci.org/SCOTT-HAMILTON/UnoconvUI.svg?branch=master)
 
 Unoconv UI is a client app for the [Unoconv Web Service](https://github.com/SCOTT-HAMILTON/docker-unoconv-webservice) written in Qt.
-It's available on Linux, Windows and Android. (It takes a bit of place on android phones, sorry but I'm not gonna write UI's in java XD).
+It's available on Linux, Windows. The Android client is called PiView, check it out here [https://github.com/SCOTT-HAMILTON/PiView](https://github.com/SCOTT-HAMILTON/PiView)
 
 ### Requirements
 
